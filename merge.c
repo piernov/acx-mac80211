@@ -2247,7 +2247,9 @@ void _acx_tx_data(acx_device_t *adev, tx_t *tx_opaque, int len,
 		acxmem_update_queue_indicator(adev, 0);
 
 	/* flush writes before we tell the adapter that it's its turn now */
+#if CONFIG_ACX_MAC80211_VERSION < KERNEL_VERSION(5, 2, 0)
 	mmiowb();
+#endif
 	write_reg16(adev, IO_ACX_INT_TRIG, INT_TRIG_TXPRC);
 	write_flush(adev);
 
