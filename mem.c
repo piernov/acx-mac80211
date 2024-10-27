@@ -2278,7 +2278,11 @@ static int acxmem_probe(struct platform_device *pdev)
 	iomem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	addr_size = iomem->end - iomem->start + 1;
 	adev->membase = iomem->start;
+#if CONFIG_ACX_MAC80211_VERSION >= KERNEL_VERSION(5, 6, 0)
+	adev->iobase = ioremap(iomem->start, addr_size);
+#else
 	adev->iobase = ioremap_nocache(iomem->start, addr_size);
+#endif
 	if (!adev->iobase) {
 		result = -ENOMEM;
 		dev_err(adev->bus_dev, "Couldn't ioremap\n");
