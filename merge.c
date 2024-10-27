@@ -829,7 +829,7 @@ int acx_read_eeprom_byte(acx_device_t *adev, u32 addr, u8 *charbuf)
 	write_flush(adev);
 	write_reg32(adev, IO_ACX_EEPROM_CTL, 2);
 
-	count = 0xffff;
+	count = 0xffffff;
 	while (read_reg16(adev, IO_ACX_EEPROM_CTL)) {
 		/* scheduling away instead of CPU burning loop doesn't
 		 * seem to work here at all: awful delay, sometimes
