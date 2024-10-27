@@ -537,10 +537,18 @@ int acx_init_ieee80211(acx_device_t *adev, struct ieee80211_hw *hw)
 	hw->max_signal = 100;
 
 	if (IS_ACX100(adev)) {
+#if CONFIG_ACX_MAC80211_VERSION >= KERNEL_VERSION(4, 7, 0)
+		adev->hw->wiphy->bands[NL80211_BAND_2GHZ] =
+#else
 		adev->hw->wiphy->bands[IEEE80211_BAND_2GHZ] =
+#endif
 			&acx100_band_2GHz;
 	} else if (IS_ACX111(adev))
+#if CONFIG_ACX_MAC80211_VERSION >= KERNEL_VERSION(4, 7, 0)
+		adev->hw->wiphy->bands[NL80211_BAND_2GHZ] =
+#else
 		adev->hw->wiphy->bands[IEEE80211_BAND_2GHZ] =
+#endif
 			&acx111_band_2GHz;
 	else {
 		log(L_ANY, "Error: Unknown device");
