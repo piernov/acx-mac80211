@@ -1001,7 +1001,11 @@ static void acxusb_complete_rx(struct urb *urb)
 		txstatus->status.rates[0].count = stat->ack_failures + 1;
 
 		// report upstream
+#if CONFIG_ACX_MAC80211_VERSION >= KERNEL_VERSION(6, 7, 0)
+		ieee80211_tx_status_skb(adev->hw, skb);
+#else
 		ieee80211_tx_status(adev->hw, skb);
+#endif
 
 		tx->busy = 0;
 		adev->hw_tx_queue[0].free++;
