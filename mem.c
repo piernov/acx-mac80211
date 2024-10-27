@@ -1810,6 +1810,12 @@ static irqreturn_t acxmem_interrupt(int irq, void *dev_id)
  */
 
 static const struct ieee80211_ops acxmem_hw_ops = {
+#if CONFIG_ACX_MAC80211_VERSION >= KERNEL_VERSION(6, 9, 0)
+	.add_chanctx = ieee80211_emulate_add_chanctx,
+	.remove_chanctx = ieee80211_emulate_remove_chanctx,
+	.change_chanctx = ieee80211_emulate_change_chanctx,
+	.switch_vif_chanctx = ieee80211_emulate_switch_vif_chanctx,
+#endif
 	.tx		= acx_op_tx,
 #if CONFIG_ACX_MAC80211_VERSION >= KERNEL_VERSION(6, 2, 0)
 	.wake_tx_queue		= ieee80211_handle_wake_tx_queue,
