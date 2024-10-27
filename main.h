@@ -27,8 +27,13 @@ int acx_op_add_interface(struct ieee80211_hw *ieee, struct ieee80211_VIF *vif);
 void acx_remove_interface(acx_device_t *adev, struct ieee80211_vif *vif);
 void acx_op_remove_interface(struct ieee80211_hw *hw, struct ieee80211_VIF *vif);
 int acx_op_config(struct ieee80211_hw *hw, u32 changed);
+#if CONFIG_ACX_MAC80211_VERSION >= KERNEL_VERSION(6, 0, 0)
+void acx_op_bss_info_changed(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
+                             struct ieee80211_bss_conf *info, u64 changed);
+#else
 void acx_op_bss_info_changed(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
                              struct ieee80211_bss_conf *info, u32 changed);
+#endif
 int acx_op_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
                    struct ieee80211_vif *vif, struct ieee80211_sta *sta,
                    struct ieee80211_key_conf *key);
@@ -36,7 +41,11 @@ void acx_op_configure_filter(struct ieee80211_hw *hw,
                              unsigned int changed_flags,
                              unsigned int *total_flags, u64 multicast);
 
-#if CONFIG_ACX_MAC80211_VERSION >= KERNEL_VERSION(3, 2, 0)
+#if CONFIG_ACX_MAC80211_VERSION >= KERNEL_VERSION(6, 0, 0)
+int acx_conf_tx(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
+		unsigned int link_id, u16 queue,
+    const struct ieee80211_tx_queue_params *params);
+#elif CONFIG_ACX_MAC80211_VERSION >= KERNEL_VERSION(3, 2, 0)
 int acx_conf_tx(struct ieee80211_hw *hw, struct ieee80211_vif *vif, u16 queue,
                 const struct ieee80211_tx_queue_params *params);
 #else

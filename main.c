@@ -162,7 +162,10 @@ static int acx_do_job_update_tim(acx_device_t *adev)
 	u16 tim_offset;
 	u16 tim_length;
 
-#if CONFIG_ACX_MAC80211_VERSION > KERNEL_VERSION(2, 6, 32)
+#if CONFIG_ACX_MAC80211_VERSION >= KERNEL_VERSION(6, 0, 0)
+	beacon = ieee80211_beacon_get_tim(adev->hw, adev->vif, &tim_offset,
+			&tim_length, 0);
+#elif CONFIG_ACX_MAC80211_VERSION > KERNEL_VERSION(2, 6, 32)
 	beacon = ieee80211_beacon_get_tim(adev->hw, adev->vif, &tim_offset,
 			&tim_length);
 #else
@@ -720,9 +723,13 @@ int acx_op_config(struct ieee80211_hw *hw, u32 changed)
 
 	return ret;
 }
-
+#if CONFIG_ACX_MAC80211_VERSION >= KERNEL_VERSION(6, 0, 0)
+void acx_op_bss_info_changed(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
+			struct ieee80211_bss_conf *info, u64 changed)
+#else
 void acx_op_bss_info_changed(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
 			struct ieee80211_bss_conf *info, u32 changed)
+#endif
 {
 	acx_device_t *adev = hw2adev(hw);
 
@@ -733,7 +740,11 @@ void acx_op_bss_info_changed(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
 
 	acx_sem_lock(adev);
 
+#if CONFIG_ACX_MAC80211_VERSION >= KERNEL_VERSION(6, 0, 0)
+	logf1(L_DEBUG, "changed=%08llX\n", changed);
+#else
 	logf1(L_DEBUG, "changed=%04X\n", changed);
+#endif
 
 	if (!adev->vif)
 		goto end_sem_unlock;
@@ -749,7 +760,11 @@ void acx_op_bss_info_changed(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
 	if (changed & BSS_CHANGED_BEACON) {
 
 		/* TODO Use ieee80211_beacon_get_tim instead */
+#if CONFIG_ACX_MAC80211_VERSION >= KERNEL_VERSION(6, 0, 0)
+		beacon = ieee80211_beacon_get(hw, vif, 0);
+#else
 		beacon = ieee80211_beacon_get(hw, vif);
+#endif
 		if (!beacon) {
 			pr_err("Error: BSS_CHANGED_BEACON: skb_tmp==NULL");
 			goto end_sem_unlock;
@@ -973,7 +988,11 @@ void acx_op_configure_filter(struct ieee80211_hw *hw,
 
 }
 
-#if CONFIG_ACX_MAC80211_VERSION >= KERNEL_VERSION(3, 2, 0)
+#if CONFIG_ACX_MAC80211_VERSION >= KERNEL_VERSION(6, 0, 0)
+int acx_conf_tx(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
+		unsigned int link_id, u16 queue,
+    const struct ieee80211_tx_queue_params *params)
+#elif CONFIG_ACX_MAC80211_VERSION >= KERNEL_VERSION(3, 2, 0)
 int acx_conf_tx(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
 		u16 queue, const struct ieee80211_tx_queue_params *params)
 #else
