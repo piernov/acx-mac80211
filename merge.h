@@ -111,7 +111,11 @@ DECL_OR_STUB ( PCI_OR_MEM,
 	{ return 0; } )
 
 DECL_OR_STUB ( PCI_OR_MEM,
+#if CONFIG_ACX_MAC80211_VERSION >= KERNEL_VERSION(6, 11, 0)
+	void acx_op_stop(struct ieee80211_hw *hw, bool suspend),
+#else
 	void acx_op_stop(struct ieee80211_hw *hw),
+#endif
 	{ } )
 
 DECL_OR_STUB ( PCI_OR_MEM,

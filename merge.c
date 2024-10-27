@@ -3186,7 +3186,11 @@ void acx_stop(acx_device_t *adev)
 }
 
 
+#if CONFIG_ACX_MAC80211_VERSION >= KERNEL_VERSION(6, 11, 0)
+void acx_op_stop(struct ieee80211_hw *hw, bool suspend)
+#else
 void acx_op_stop(struct ieee80211_hw *hw)
+#endif
 {
 	acx_device_t *adev = hw2adev(hw);
 

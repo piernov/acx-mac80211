@@ -2409,7 +2409,9 @@ static int acxmem_probe(struct platform_device *pdev)
  * pdev - ptr to PCI device structure containing info about pci
  * configuration
  */
-#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 8, 0)
+#if CONFIG_ACX_MAC80211_VERSION >= KERNEL_VERSION(6, 11, 0)
+static void acxmem_remove(struct platform_device *pdev)
+#elif LINUX_VERSION_CODE < KERNEL_VERSION(3, 8, 0)
 static int __devexit acxmem_remove(struct platform_device *pdev)
 #else
 static int acxmem_remove(struct platform_device *pdev)
@@ -2502,7 +2504,9 @@ static int acxmem_remove(struct platform_device *pdev)
 
 end_no_lock:
 
+#if CONFIG_ACX_MAC80211_VERSION < KERNEL_VERSION(6, 11, 0)
 	return(0);
+#endif
 }
 
 /*

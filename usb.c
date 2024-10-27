@@ -1451,7 +1451,11 @@ static int acxusb_op_start(struct ieee80211_hw *hw)
  * transfers, these are unlinked (asynchronously). The module in-use count
  * is also decreased in this function.
  */
+#if CONFIG_ACX_MAC80211_VERSION >= KERNEL_VERSION(6, 11, 0)
+static void acxusb_op_stop(struct ieee80211_hw *hw, bool suspend)
+#else
 static void acxusb_op_stop(struct ieee80211_hw *hw)
+#endif
 {
 	acx_device_t *adev = hw2adev(hw);
 	int i;
