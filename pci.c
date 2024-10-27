@@ -661,6 +661,9 @@ more bytes may follow
 
 static const struct ieee80211_ops acxpci_hw_ops = {
 	.tx		= acx_op_tx,
+#if CONFIG_ACX_MAC80211_VERSION >= KERNEL_VERSION(6, 2, 0)
+	.wake_tx_queue		= ieee80211_handle_wake_tx_queue,
+#endif
 	.conf_tx	= acx_conf_tx,
 	.start		= acx_op_start,
 	.stop		= acx_op_stop,

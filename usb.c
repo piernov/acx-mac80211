@@ -1495,6 +1495,9 @@ static void acxusb_op_stop(struct ieee80211_hw *hw)
 
 static const struct ieee80211_ops acxusb_hw_ops = {
 	.tx = acx_op_tx,
+#if CONFIG_ACX_MAC80211_VERSION >= KERNEL_VERSION(6, 2, 0)
+	.wake_tx_queue		= ieee80211_handle_wake_tx_queue,
+#endif
 	.conf_tx = acx_conf_tx,
 	.add_interface = acx_op_add_interface,
 	.remove_interface = acx_op_remove_interface,
