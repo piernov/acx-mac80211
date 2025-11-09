@@ -673,7 +673,11 @@ void acx_op_remove_interface(struct ieee80211_hw *hw, struct ieee80211_VIF *vif)
 	acx_sem_unlock(adev);
 }
 
+#if CONFIG_ACX_MAC80211_VERSION < KERNEL_VERSION(6, 17, 0)
 int acx_op_config(struct ieee80211_hw *hw, u32 changed)
+#else
+int acx_op_config(struct ieee80211_hw *hw, int radio_idx, u32 changed)
+#endif
 {
 	acx_device_t *adev = hw2adev(hw);
 	struct ieee80211_conf *conf = &hw->conf;

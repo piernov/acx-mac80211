@@ -26,7 +26,11 @@ void acx_timer(unsigned long address);
 int acx_op_add_interface(struct ieee80211_hw *ieee, struct ieee80211_VIF *vif);
 void acx_remove_interface(acx_device_t *adev, struct ieee80211_vif *vif);
 void acx_op_remove_interface(struct ieee80211_hw *hw, struct ieee80211_VIF *vif);
+#if CONFIG_ACX_MAC80211_VERSION < KERNEL_VERSION(6, 17, 0)
 int acx_op_config(struct ieee80211_hw *hw, u32 changed);
+#else
+int acx_op_config(struct ieee80211_hw *hw, int radio_idx, u32 changed);
+#endif
 #if CONFIG_ACX_MAC80211_VERSION >= KERNEL_VERSION(6, 0, 0)
 void acx_op_bss_info_changed(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
                              struct ieee80211_bss_conf *info, u64 changed);
